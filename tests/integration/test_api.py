@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 
 
 def test_health(client):

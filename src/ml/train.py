@@ -13,7 +13,6 @@ Fluxo:
 import mlflow
 import mlflow.sklearn
 import numpy as np
-import pandas as pd
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
@@ -57,11 +56,11 @@ def train(db: Session) -> dict:
         raise ValueError(f"Dados insuficientes para treino: {len(rows)} registros (mínimo 10)")
 
     df = build_features(rows)
-    X = df[FEATURE_COLUMNS]
+    x_feat = df[FEATURE_COLUMNS]
     y = df[TARGET_COLUMN]
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
+    x_train, x_test, y_train, y_test = train_test_split(
+        x_feat, y, test_size=0.2, random_state=42
     )
 
     params = {
@@ -79,8 +78,8 @@ def train(db: Session) -> dict:
     )
 
     with mlflow.start_run() as run:
-        pipeline.fit(X_train, y_train)
-        y_pred = pipeline.predict(X_test)
+        pipeline.fit(x_train, y_train)
+        y_pred = pipeline.predict(x_test)
 
         metrics = {
             "mae": float(mean_absolute_error(y_test, y_pred)),
@@ -90,18 +89,18 @@ def train(db: Session) -> dict:
 
         mlflow.log_params(params)
         mlflow.log_metrics(metrics)
-        mlflow.log_param("train_samples", len(X_train))
-        mlflow.log_param("test_samples", len(X_test))
+        mlflow.log_param("train_samples", len(x_train))
+        mlflow.log_param("test_samples", len(x_test))
         mlflow.log_param("features", FEATURE_COLUMNS)
 
         mlflow.sklearn.log_model(
             pipeline,
             artifact_path="model",
             registered_model_name=MODEL_NAME,
-            input_example=X_test.head(3),
+            input_example=x_test.head(3),
         )
 
         run_id = run.info.run_id
         logger.info(f"Treino concluído — run_id={run_id} | R²={metrics['r2']:.3f} | MAE={metrics['mae']:.1f}")
 
-    return {"run_id": run_id, **metrics, "train_samples": len(X_train)}
+    return {"run_id": run_id, **metrics, "train_samples": len(x_train)}

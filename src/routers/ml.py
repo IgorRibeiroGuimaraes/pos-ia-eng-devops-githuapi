@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from src.database.session import get_db
-from src.ml.train import train
 from src.ml.predict import predict_stars
+from src.ml.train import train
 from src.schemas.ml_schemas import PredictRequest, PredictResponse, TrainResponse
 
 router = APIRouter(prefix="/ml", tags=["MLOps"])

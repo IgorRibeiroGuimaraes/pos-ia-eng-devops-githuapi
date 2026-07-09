@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy import text
 
@@ -17,7 +17,7 @@ def _insert_user(db, *, login: str = "octocat", github_id: int = 1) -> dict:
             "followers": 500,
             "following": 10,
             "public_repos": 20,
-            "account_created_at": datetime(2015, 1, 1, tzinfo=timezone.utc),
+            "account_created_at": datetime(2015, 1, 1, tzinfo=UTC),
         },
     ).mappings().first()
     db.commit()
@@ -41,8 +41,8 @@ def _insert_repository(db, *, owner_id: int, name: str = "hello-world", github_r
             "forks": 5,
             "open_issues": 2,
             "owner_id": owner_id,
-            "repo_created_at": datetime(2020, 1, 1, tzinfo=timezone.utc),
-            "repo_updated_at": datetime(2024, 1, 1, tzinfo=timezone.utc),
+            "repo_created_at": datetime(2020, 1, 1, tzinfo=UTC),
+            "repo_updated_at": datetime(2024, 1, 1, tzinfo=UTC),
         },
     ).mappings().first()
     db.commit()
@@ -71,7 +71,7 @@ def test_user_repositories(client, db):
     _insert_repository(db, owner_id=user["id"], name="repo1", github_repo_id=3001)
     _insert_repository(db, owner_id=user["id"], name="repo2", github_repo_id=3002)
 
-    r = client.get(f"/users/repoowner/repositories")
+    r = client.get("/users/repoowner/repositories")
     assert r.status_code == 200
     data = r.json()
     assert data["total"] == 2

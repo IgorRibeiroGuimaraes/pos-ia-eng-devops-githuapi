@@ -16,10 +16,9 @@ Target:
   - stars
 """
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pandas as pd
-
 
 FEATURE_COLUMNS = [
     "forks",
@@ -44,10 +43,10 @@ def build_features(rows: list[dict]) -> pd.DataFrame:
         if isinstance(account_created_at, str):
             account_created_at = datetime.fromisoformat(account_created_at)
         if account_created_at and account_created_at.tzinfo is None:
-            account_created_at = account_created_at.replace(tzinfo=timezone.utc)
+            account_created_at = account_created_at.replace(tzinfo=UTC)
 
         age_days = (
-            (datetime.now(timezone.utc) - account_created_at).days
+            (datetime.now(UTC) - account_created_at).days
             if account_created_at
             else 0
         )

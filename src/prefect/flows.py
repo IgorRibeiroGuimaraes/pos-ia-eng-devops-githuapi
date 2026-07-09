@@ -1,15 +1,14 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from prefect import flow, task, get_run_logger
-
+from prefect import flow, get_run_logger, task
 from src.database.session import SessionLocal
 from src.integrations.github.client import GitHubClient
-from src.integrations.github.users import fetch_users_by_query
 from src.integrations.github.repositories import fetch_user_repositories
-from src.jobs.transform import transform_user, transform_repository, enrich_user
-from src.repositories.user_repository import UserRepository
-from src.repositories.repository_repository import RepositoryRepository
+from src.integrations.github.users import fetch_users_by_query
+from src.jobs.transform import enrich_user, transform_repository, transform_user
 from src.repositories.pipeline_repository import PipelineExecutionRepository
+from src.repositories.repository_repository import RepositoryRepository
+from src.repositories.user_repository import UserRepository
 
 
 @task(name="extract-users", retries=3, retry_delay_seconds=10)
@@ -68,7 +67,7 @@ def github_pipeline(query: str = "language:python followers:>100") -> dict:
     logger = get_run_logger()
     db = SessionLocal()
     exec_repo = PipelineExecutionRepository(db)
-    start = datetime.now(timezone.utc)
+    start = datetime.now(UTC)
 
     execution = exec_repo.create(
         {
@@ -96,7 +95,7 @@ def github_pipeline(query: str = "language:python followers:>100") -> dict:
                 task_load_repository(repo_data)
                 repos_processed += 1
 
-        elapsed = (datetime.now(timezone.utc) - start).total_seconds()
+        elapsed = (datetime.now(UTC) - start).total_seconds()
         exec_repo.update(
             execution["id"],
             {
@@ -114,7 +113,7 @@ def github_pipeline(query: str = "language:python followers:>100") -> dict:
         }
 
     except Exception as exc:
-        elapsed = (datetime.now(timezone.utc) - start).total_seconds()
+        elapsed = (datetime.now(UTC) - start).total_seconds()
         exec_repo.update(
             execution["id"],
             {

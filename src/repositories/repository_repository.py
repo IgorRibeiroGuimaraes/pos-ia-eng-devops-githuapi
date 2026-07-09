@@ -1,5 +1,5 @@
-from sqlalchemy.orm import Session
 from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 from src.schemas.schemas import RepositoryCreate
 
@@ -31,11 +31,11 @@ class RepositoryRepository:
         language: str | None = None,
         min_stars: int | None = None,
     ) -> tuple[list[dict], int]:
-        _ALLOWED_ORDER = {"id", "name", "stars", "forks", "open_issues", "repo_created_at", "repo_updated_at"}
-        _ALLOWED_DIR = {"asc", "desc"}
-        if order_by not in _ALLOWED_ORDER:
+        _allowed_order = {"id", "name", "stars", "forks", "open_issues", "repo_created_at", "repo_updated_at"}
+        _allowed_dir = {"asc", "desc"}
+        if order_by not in _allowed_order:
             order_by = "id"
-        if order_dir not in _ALLOWED_DIR:
+        if order_dir not in _allowed_dir:
             order_dir = "asc"
 
         offset = (page - 1) * page_size

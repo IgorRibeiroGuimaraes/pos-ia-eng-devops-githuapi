@@ -1,6 +1,4 @@
-import pytest
-from src.jobs.transform import transform_user, transform_repository, enrich_user
-
+from src.jobs.transform import enrich_user, transform_repository, transform_user
 
 RAW_USER = {
     "id": 1,

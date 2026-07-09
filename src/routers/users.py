@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from src.database.session import get_db
-from src.repositories.user_repository import UserRepository
 from src.repositories.repository_repository import RepositoryRepository
-from src.schemas.schemas import UserResponse, RepositoryResponse, PaginatedResponse
+from src.repositories.user_repository import UserRepository
+from src.schemas.schemas import PaginatedResponse, RepositoryResponse, UserResponse
 
 router = APIRouter(prefix="/users", tags=["Users"])
 

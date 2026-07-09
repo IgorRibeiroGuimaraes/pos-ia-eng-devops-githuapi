@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, Depends
 from sqlalchemy.orm import Session
 
 from src.database.session import get_db
-from src.services.pipeline_service import run_pipeline
 from src.repositories.pipeline_repository import PipelineExecutionRepository
 from src.schemas.schemas import PipelineExecutionResponse
+from src.services.pipeline_service import run_pipeline
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 

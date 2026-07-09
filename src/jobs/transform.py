@@ -1,6 +1,6 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from src.schemas.schemas import UserCreate, RepositoryCreate
+from src.schemas.schemas import RepositoryCreate, UserCreate
 
 
 def transform_user(raw: dict) -> UserCreate:
@@ -39,7 +39,7 @@ def enrich_user(raw: dict) -> dict:
     if created_at:
         created = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
         account_age_years = max(
-            (datetime.now(timezone.utc) - created).days / 365.25, 0.01
+            (datetime.now(UTC) - created).days / 365.25, 0.01
         )
 
     return {

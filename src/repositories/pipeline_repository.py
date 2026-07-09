@@ -1,5 +1,5 @@
-from sqlalchemy.orm import Session
 from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 # Colunas permitidas no UPDATE — impede injeção via nomes de campo dinâmicos
 _UPDATABLE_FIELDS = frozenset({"status", "records_processed", "execution_time", "error_message"})

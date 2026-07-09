@@ -1,5 +1,5 @@
-from sqlalchemy.orm import Session
 from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 from src.schemas.schemas import UserCreate
 
@@ -30,11 +30,11 @@ class UserRepository:
         order_dir: str = "asc",
         min_followers: int | None = None,
     ) -> tuple[list[dict], int]:
-        _ALLOWED_ORDER = {"id", "login", "followers", "public_repos", "account_created_at"}
-        _ALLOWED_DIR = {"asc", "desc"}
-        if order_by not in _ALLOWED_ORDER:
+        _allowed_order = {"id", "login", "followers", "public_repos", "account_created_at"}
+        _allowed_dir = {"asc", "desc"}
+        if order_by not in _allowed_order:
             order_by = "id"
-        if order_dir not in _ALLOWED_DIR:
+        if order_dir not in _allowed_dir:
             order_dir = "asc"
 
         offset = (page - 1) * page_size

@@ -3,7 +3,6 @@ Inferência: carrega o modelo registrado no MLflow e retorna predições.
 """
 
 import mlflow.sklearn
-import pandas as pd
 
 from src.core.config import settings
 from src.core.logging import get_logger

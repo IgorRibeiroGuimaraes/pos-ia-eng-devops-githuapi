@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.core.config import settings
-from src.routers import users, repositories, statistics, admin, ml
+from src.routers import admin, ml, repositories, statistics, users
 
 app = FastAPI(
     title="GitHub Data Pipeline API",

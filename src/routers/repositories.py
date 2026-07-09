@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from src.database.session import get_db
 from src.repositories.repository_repository import RepositoryRepository
-from src.schemas.schemas import RepositoryResponse, PaginatedResponse
+from src.schemas.schemas import PaginatedResponse, RepositoryResponse
 
 router = APIRouter(prefix="/repositories", tags=["Repositories"])
 

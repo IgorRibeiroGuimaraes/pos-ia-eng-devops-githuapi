@@ -1,10 +1,10 @@
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from src.main import app
 from src.database.session import get_db
+from src.main import app
 from src.models.models import Base
 
 TEST_DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/github_pipeline_test"
