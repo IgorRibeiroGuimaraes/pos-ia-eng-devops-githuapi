@@ -38,9 +38,7 @@ def enrich_user(raw: dict) -> dict:
     account_age_years = 0
     if created_at:
         created = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
-        account_age_years = max(
-            (datetime.now(UTC) - created).days / 365.25, 0.01
-        )
+        account_age_years = max((datetime.now(UTC) - created).days / 365.25, 0.01)
 
     return {
         **raw,

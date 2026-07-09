@@ -35,6 +35,7 @@ def predict_stars(repo_data: dict, user_data: dict) -> dict:
         dict com predicted_stars e features usadas
     """
     import mlflow
+
     mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
 
     row = {**repo_data, **user_data}

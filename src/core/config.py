@@ -13,7 +13,9 @@ class Settings(BaseSettings):
     environment: str = Field(default="development")
 
     # Banco de Dados
-    database_url: str = Field(default="postgresql://postgres:postgres@localhost:5432/github_pipeline")
+    database_url: str = Field(
+        default="postgresql://postgres:postgres@localhost:5432/github_pipeline"
+    )
 
     # GitHub API
     github_token: str = Field(default="")

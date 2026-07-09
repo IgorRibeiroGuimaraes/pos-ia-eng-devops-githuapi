@@ -4,47 +4,57 @@ from sqlalchemy import text
 
 
 def _insert_user(db, *, login: str = "octocat", github_id: int = 1) -> dict:
-    row = db.execute(
-        text("""
+    row = (
+        db.execute(
+            text("""
             INSERT INTO users (github_id, login, name, followers, following, public_repos, account_created_at)
             VALUES (:github_id, :login, :name, :followers, :following, :public_repos, :account_created_at)
             RETURNING *
         """),
-        {
-            "github_id": github_id,
-            "login": login,
-            "name": "Test User",
-            "followers": 500,
-            "following": 10,
-            "public_repos": 20,
-            "account_created_at": datetime(2015, 1, 1, tzinfo=UTC),
-        },
-    ).mappings().first()
+            {
+                "github_id": github_id,
+                "login": login,
+                "name": "Test User",
+                "followers": 500,
+                "following": 10,
+                "public_repos": 20,
+                "account_created_at": datetime(2015, 1, 1, tzinfo=UTC),
+            },
+        )
+        .mappings()
+        .first()
+    )
     db.commit()
     return dict(row)
 
 
-def _insert_repository(db, *, owner_id: int, name: str = "hello-world", github_repo_id: int = 100) -> dict:
-    row = db.execute(
-        text("""
+def _insert_repository(
+    db, *, owner_id: int, name: str = "hello-world", github_repo_id: int = 100
+) -> dict:
+    row = (
+        db.execute(
+            text("""
             INSERT INTO repositories
                 (github_repo_id, name, language, stars, forks, open_issues, owner_id, repo_created_at, repo_updated_at)
             VALUES
                 (:github_repo_id, :name, :language, :stars, :forks, :open_issues, :owner_id, :repo_created_at, :repo_updated_at)
             RETURNING *
         """),
-        {
-            "github_repo_id": github_repo_id,
-            "name": name,
-            "language": "Python",
-            "stars": 42,
-            "forks": 5,
-            "open_issues": 2,
-            "owner_id": owner_id,
-            "repo_created_at": datetime(2020, 1, 1, tzinfo=UTC),
-            "repo_updated_at": datetime(2024, 1, 1, tzinfo=UTC),
-        },
-    ).mappings().first()
+            {
+                "github_repo_id": github_repo_id,
+                "name": name,
+                "language": "Python",
+                "stars": 42,
+                "forks": 5,
+                "open_issues": 2,
+                "owner_id": owner_id,
+                "repo_created_at": datetime(2020, 1, 1, tzinfo=UTC),
+                "repo_updated_at": datetime(2024, 1, 1, tzinfo=UTC),
+            },
+        )
+        .mappings()
+        .first()
+    )
     db.commit()
     return dict(row)
 

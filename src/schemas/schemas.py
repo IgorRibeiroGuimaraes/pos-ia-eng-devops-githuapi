@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 # ── User Schemas ──────────────────────────────────────────────────────────────
 
+
 class UserBase(BaseModel):
     login: str
     name: str | None = None
@@ -27,6 +28,7 @@ class UserResponse(UserBase):
 
 
 # ── Repository Schemas ────────────────────────────────────────────────────────
+
 
 class RepositoryBase(BaseModel):
     name: str
@@ -55,6 +57,7 @@ class RepositoryResponse(RepositoryBase):
 
 # ── Pagination ────────────────────────────────────────────────────────────────
 
+
 class PaginatedResponse(BaseModel):
     total: int
     page: int
@@ -63,6 +66,7 @@ class PaginatedResponse(BaseModel):
 
 
 # ── Pipeline Schemas ──────────────────────────────────────────────────────────
+
 
 class PipelineExecutionResponse(BaseModel):
     id: int
@@ -78,6 +82,7 @@ class PipelineExecutionResponse(BaseModel):
 
 
 # ── Statistics ────────────────────────────────────────────────────────────────
+
 
 class StatisticsResponse(BaseModel):
     total_users: int

@@ -45,11 +45,7 @@ def build_features(rows: list[dict]) -> pd.DataFrame:
         if account_created_at and account_created_at.tzinfo is None:
             account_created_at = account_created_at.replace(tzinfo=UTC)
 
-        age_days = (
-            (datetime.now(UTC) - account_created_at).days
-            if account_created_at
-            else 0
-        )
+        age_days = (datetime.now(UTC) - account_created_at).days if account_created_at else 0
         age_years = max(age_days / 365.25, 0.01)
 
         records.append(

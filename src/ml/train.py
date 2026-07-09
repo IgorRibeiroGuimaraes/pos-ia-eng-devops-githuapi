@@ -31,8 +31,7 @@ MODEL_NAME = "github-repo-popularity"
 
 
 def _load_training_data(db: Session) -> list[dict]:
-    rows = db.execute(
-        text("""
+    rows = db.execute(text("""
             SELECT
                 r.stars,
                 r.forks,
@@ -42,8 +41,7 @@ def _load_training_data(db: Session) -> list[dict]:
                 u.account_created_at
             FROM repositories r
             JOIN users u ON r.owner_id = u.id
-        """)
-    ).mappings().all()
+        """)).mappings().all()
     return [dict(row) for row in rows]
 
 
@@ -59,9 +57,7 @@ def train(db: Session) -> dict:
     x_feat = df[FEATURE_COLUMNS]
     y = df[TARGET_COLUMN]
 
-    x_train, x_test, y_train, y_test = train_test_split(
-        x_feat, y, test_size=0.2, random_state=42
-    )
+    x_train, x_test, y_train, y_test = train_test_split(x_feat, y, test_size=0.2, random_state=42)
 
     params = {
         "n_estimators": 100,
@@ -101,6 +97,8 @@ def train(db: Session) -> dict:
         )
 
         run_id = run.info.run_id
-        logger.info(f"Treino concluído — run_id={run_id} | R²={metrics['r2']:.3f} | MAE={metrics['mae']:.1f}")
+        logger.info(
+            f"Treino concluído — run_id={run_id} | R²={metrics['r2']:.3f} | MAE={metrics['mae']:.1f}"
+        )
 
     return {"run_id": run_id, **metrics, "train_samples": len(x_train)}
