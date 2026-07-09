@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.core.config import settings
-from src.routers import users, repositories, statistics, admin
+from src.routers import users, repositories, statistics, admin, ml
 
 app = FastAPI(
     title="GitHub Data Pipeline API",
@@ -24,6 +24,7 @@ app.include_router(users.router)
 app.include_router(repositories.router)
 app.include_router(statistics.router)
 app.include_router(admin.router)
+app.include_router(ml.router)
 
 
 @app.get("/health", tags=["Health"])

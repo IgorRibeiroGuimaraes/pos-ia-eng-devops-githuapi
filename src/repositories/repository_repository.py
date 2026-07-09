@@ -22,12 +22,61 @@ class RepositoryRepository:
         ).mappings().first()
         return dict(row) if row else None
 
-    def get_all(self, page: int = 1, page_size: int = 20) -> tuple[list[dict], int]:
+    def get_all(
+        self,
+        page: int = 1,
+        page_size: int = 20,
+        order_by: str = "id",
+        order_dir: str = "asc",
+        language: str | None = None,
+        min_stars: int | None = None,
+    ) -> tuple[list[dict], int]:
+        _ALLOWED_ORDER = {"id", "name", "stars", "forks", "open_issues", "repo_created_at", "repo_updated_at"}
+        _ALLOWED_DIR = {"asc", "desc"}
+        if order_by not in _ALLOWED_ORDER:
+            order_by = "id"
+        if order_dir not in _ALLOWED_DIR:
+            order_dir = "asc"
+
         offset = (page - 1) * page_size
-        total = self.db.execute(text("SELECT COUNT(*) FROM repositories")).scalar() or 0
+        conditions = []
+        params: dict = {"limit": page_size, "offset": offset}
+        if language:
+            conditions.append("language = :language")
+            params["language"] = language
+        if min_stars is not None:
+            conditions.append("stars >= :min_stars")
+            params["min_stars"] = min_stars
+
+        where = ("WHERE " + " AND ".join(conditions)) if conditions else ""
+        total = self.db.execute(
+            text(f"SELECT COUNT(*) FROM repositories {where}"), params
+        ).scalar() or 0
         rows = self.db.execute(
-            text("SELECT * FROM repositories ORDER BY id LIMIT :limit OFFSET :offset"),
-            {"limit": page_size, "offset": offset},
+            text(f"SELECT * FROM repositories {where} ORDER BY {order_by} {order_dir} LIMIT :limit OFFSET :offset"),
+            params,
+        ).mappings().all()
+        return [dict(r) for r in rows], total
+
+    def get_by_owner_id(
+        self,
+        owner_id: int,
+        page: int = 1,
+        page_size: int = 20,
+    ) -> tuple[list[dict], int]:
+        offset = (page - 1) * page_size
+        total = self.db.execute(
+            text("SELECT COUNT(*) FROM repositories WHERE owner_id = :owner_id"),
+            {"owner_id": owner_id},
+        ).scalar() or 0
+        rows = self.db.execute(
+            text("""
+                SELECT * FROM repositories
+                WHERE owner_id = :owner_id
+                ORDER BY stars DESC
+                LIMIT :limit OFFSET :offset
+            """),
+            {"owner_id": owner_id, "limit": page_size, "offset": offset},
         ).mappings().all()
         return [dict(r) for r in rows], total
 

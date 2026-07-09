@@ -22,12 +22,34 @@ class UserRepository:
         ).mappings().first()
         return dict(row) if row else None
 
-    def get_all(self, page: int = 1, page_size: int = 20) -> tuple[list[dict], int]:
+    def get_all(
+        self,
+        page: int = 1,
+        page_size: int = 20,
+        order_by: str = "id",
+        order_dir: str = "asc",
+        min_followers: int | None = None,
+    ) -> tuple[list[dict], int]:
+        _ALLOWED_ORDER = {"id", "login", "followers", "public_repos", "account_created_at"}
+        _ALLOWED_DIR = {"asc", "desc"}
+        if order_by not in _ALLOWED_ORDER:
+            order_by = "id"
+        if order_dir not in _ALLOWED_DIR:
+            order_dir = "asc"
+
         offset = (page - 1) * page_size
-        total = self.db.execute(text("SELECT COUNT(*) FROM users")).scalar() or 0
+        where = "WHERE followers >= :min_followers" if min_followers is not None else ""
+        params: dict = {"limit": page_size, "offset": offset}
+        if min_followers is not None:
+            params["min_followers"] = min_followers
+
+        total = self.db.execute(
+            text(f"SELECT COUNT(*) FROM users {where}"),
+            params,
+        ).scalar() or 0
         rows = self.db.execute(
-            text("SELECT * FROM users ORDER BY id LIMIT :limit OFFSET :offset"),
-            {"limit": page_size, "offset": offset},
+            text(f"SELECT * FROM users {where} ORDER BY {order_by} {order_dir} LIMIT :limit OFFSET :offset"),
+            params,
         ).mappings().all()
         return [dict(r) for r in rows], total
 

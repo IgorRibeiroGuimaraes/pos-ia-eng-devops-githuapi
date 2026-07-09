@@ -32,6 +32,18 @@ extract:
 
 run-pipeline: extract
 
+## ── MLOps ─────────────────────────────────────────────────────────────────────
+mlflow:
+	mlflow server --host 0.0.0.0 --port 5000 \
+		--backend-store-uri $(DATABASE_URL) \
+		--default-artifact-root ./mlflow-artifacts
+
+ml-train:
+	python -m src.prefect.ml_flows
+
+ml-ui:
+	@echo "MLflow UI: http://localhost:5000"
+
 ## ── Prefect ───────────────────────────────────────────────────────────────────
 prefect:
 	prefect server start

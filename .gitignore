@@ -13,3 +13,5 @@ dist/
 build/
 .ruff_cache/
 *.log
+.prefect/
+mlflow-artifacts/

@@ -61,5 +61,23 @@ services:
       - postgres
     restart: unless-stopped
 
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.16.0
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri postgresql://postgres:postgres@postgres:5432/mlflow
+      --default-artifact-root /mlflow/artifacts
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlflow_artifacts:/mlflow/artifacts
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
 volumes:
   postgres_data:
+  mlflow_artifacts:

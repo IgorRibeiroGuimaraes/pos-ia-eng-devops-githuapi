@@ -27,5 +27,9 @@ class Settings(BaseSettings):
     # Prefect
     prefect_api_url: str = Field(default="http://localhost:4200/api")
 
+    # MLflow
+    mlflow_tracking_uri: str = Field(default="http://localhost:5000")
+    mlflow_experiment_name: str = Field(default="github-popularity-model")
+
 
 settings = Settings()
