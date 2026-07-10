@@ -63,13 +63,12 @@ def train(db: Session) -> dict:
         "n_estimators": 100,
         "max_depth": 4,
         "learning_rate": 0.1,
-        "random_state": 42,
     }
 
     pipeline = Pipeline(
         [
             ("scaler", StandardScaler()),
-            ("model", GradientBoostingRegressor(**params)),
+            ("model", GradientBoostingRegressor(**params, random_state=42)),
         ]
     )
 

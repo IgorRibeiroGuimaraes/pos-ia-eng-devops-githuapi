@@ -35,7 +35,7 @@ def enrich_user(raw: dict) -> dict:
     public_repos = raw.get("public_repos", 1) or 1
     created_at = raw.get("created_at", "")
 
-    account_age_years = 0
+    account_age_years = 0.01  # valor mínimo seguro evita divisão por zero
     if created_at:
         created = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
         account_age_years = max((datetime.now(UTC) - created).days / 365.25, 0.01)
