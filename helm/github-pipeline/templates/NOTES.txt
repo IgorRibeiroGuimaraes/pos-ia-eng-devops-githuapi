@@ -1,0 +1,36 @@
+Thank you for installing {{ .Chart.Name }} v{{ .Chart.AppVersion }}!
+
+== Access the API ==
+
+{{- if .Values.ingress.enabled }}
+  API URL: http://{{ .Values.ingress.host }}
+  Swagger: http://{{ .Values.ingress.host }}/docs
+{{- else if eq .Values.service.type "NodePort" }}
+  export NODE_PORT=$(kubectl get svc {{ include "github-pipeline.fullname" . }}-api -o jsonpath="{.spec.ports[0].nodePort}")
+  export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "API: http://$NODE_IP:$NODE_PORT"
+{{- else }}
+  kubectl port-forward svc/{{ include "github-pipeline.fullname" . }}-api 8000:80
+  API:     http://localhost:8000
+  Swagger: http://localhost:8000/docs
+{{- end }}
+
+{{- if .Values.mlflow.enabled }}
+
+== MLflow UI ==
+  kubectl port-forward svc/mlflow 5000:{{ .Values.mlflow.port }}
+  URL: http://localhost:5000
+{{- end }}
+
+{{- if .Values.prefect.enabled }}
+
+== Prefect UI ==
+  kubectl port-forward svc/prefect-server 4200:{{ .Values.prefect.port }}
+  URL: http://localhost:4200
+{{- end }}
+
+== Run Pipeline ==
+  curl -X POST "http://<api-host>/admin/run-pipeline?query=language:python+followers:>100"
+
+== Check Health ==
+  curl http://<api-host>/health

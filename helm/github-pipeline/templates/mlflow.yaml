@@ -1,0 +1,75 @@
+{{- if .Values.mlflow.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "github-pipeline.fullname" . }}-mlflow-pvc
+  labels:
+    {{- include "github-pipeline.labels" . | nindent 4 }}
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: {{ .Values.mlflow.persistence.size }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "github-pipeline.fullname" . }}-mlflow
+  labels:
+    {{- include "github-pipeline.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mlflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "github-pipeline.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: mlflow
+  template:
+    metadata:
+      labels:
+        {{- include "github-pipeline.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: mlflow
+    spec:
+      containers:
+        - name: mlflow
+          image: "{{ .Values.mlflow.image.repository }}:{{ .Values.mlflow.image.tag }}"
+          imagePullPolicy: {{ .Values.mlflow.image.pullPolicy }}
+          command:
+            - mlflow
+            - server
+            - --host=0.0.0.0
+            - --port={{ .Values.mlflow.port | quote }}
+            - --backend-store-uri=/mlflow/mlruns
+            - --default-artifact-root=/mlflow/artifacts
+          ports:
+            - name: http
+              containerPort: {{ .Values.mlflow.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: mlflow-data
+              mountPath: /mlflow
+          resources:
+            {{- toYaml .Values.mlflow.resources | nindent 12 }}
+      volumes:
+        - name: mlflow-data
+          persistentVolumeClaim:
+            claimName: {{ include "github-pipeline.fullname" . }}-mlflow-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow
+  labels:
+    {{- include "github-pipeline.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mlflow
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.mlflow.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "github-pipeline.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: mlflow
+{{- end }}

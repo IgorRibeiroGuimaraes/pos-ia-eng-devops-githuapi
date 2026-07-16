@@ -1,0 +1,27 @@
+apiVersion: v2
+name: github-pipeline
+description: >
+  GitHub Data Pipeline API — ETL pipeline that ingests GitHub data,
+  exposes a REST API via FastAPI, orchestrates with Prefect and
+  tracks ML experiments with MLflow.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+
+keywords:
+  - github
+  - pipeline
+  - fastapi
+  - prefect
+  - mlflow
+  - etl
+
+maintainers:
+  - name: IgorRibeiroGuimaraes
+    url: https://github.com/IgorRibeiroGuimaraes
+
+dependencies:
+  - name: postgresql
+    version: "15.5.38"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled

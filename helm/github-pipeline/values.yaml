@@ -1,0 +1,117 @@
+# ─────────────────────────────────────────────
+# Global
+# ─────────────────────────────────────────────
+replicaCount: 1
+
+image:
+  repository: github-data-pipeline
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+# ─────────────────────────────────────────────
+# API (FastAPI)
+# ─────────────────────────────────────────────
+api:
+  port: 8000
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  env:
+    ENVIRONMENT: production
+    API_HOST: "0.0.0.0"
+    API_PORT: "8000"
+    GITHUB_API_BASE_URL: "https://api.github.com"
+    MLFLOW_TRACKING_URI: "http://mlflow:5000"
+    MLFLOW_EXPERIMENT_NAME: "github-repo-popularity"
+    PREFECT_API_URL: "http://prefect-server:4200/api"
+
+# ─────────────────────────────────────────────
+# Secrets (sobrescreva no install com --set)
+# ─────────────────────────────────────────────
+secrets:
+  githubToken: ""          # --set secrets.githubToken=ghp_...
+  databasePassword: "postgres"
+
+# ─────────────────────────────────────────────
+# PostgreSQL (Bitnami subchart)
+# ─────────────────────────────────────────────
+postgresql:
+  enabled: true
+  auth:
+    username: postgres
+    password: postgres
+    database: github_pipeline
+  primary:
+    persistence:
+      enabled: true
+      size: 2Gi
+    resources:
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+
+# ─────────────────────────────────────────────
+# MLflow
+# ─────────────────────────────────────────────
+mlflow:
+  enabled: true
+  image:
+    repository: ghcr.io/mlflow/mlflow
+    tag: "v2.16.0"
+    pullPolicy: IfNotPresent
+  port: 5000
+  persistence:
+    enabled: true
+    size: 1Gi
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits:
+      cpu: "250m"
+      memory: "512Mi"
+
+# ─────────────────────────────────────────────
+# Prefect Server
+# ─────────────────────────────────────────────
+prefect:
+  enabled: true
+  image:
+    repository: prefecthq/prefect
+    tag: "3-latest"
+    pullPolicy: IfNotPresent
+  port: 4200
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits:
+      cpu: "250m"
+      memory: "512Mi"
+
+# ─────────────────────────────────────────────
+# Ingress
+# ─────────────────────────────────────────────
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations: {}
+  host: github-pipeline.local
+  tls: []
+
+# ─────────────────────────────────────────────
+# Service
+# ─────────────────────────────────────────────
+service:
+  type: ClusterIP
+  port: 80
