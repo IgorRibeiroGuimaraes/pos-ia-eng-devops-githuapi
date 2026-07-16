@@ -17,6 +17,7 @@ spec:
         {{- include "github-pipeline.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: api
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: api
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

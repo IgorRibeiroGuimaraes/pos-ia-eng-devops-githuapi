@@ -28,9 +28,9 @@ api:
     API_HOST: "0.0.0.0"
     API_PORT: "8000"
     GITHUB_API_BASE_URL: "https://api.github.com"
-    MLFLOW_TRACKING_URI: "http://mlflow:5000"
+    MLFLOW_TRACKING_URI: "http://mlflow:5000" # NOSONAR - internal cluster service URL
     MLFLOW_EXPERIMENT_NAME: "github-repo-popularity"
-    PREFECT_API_URL: "http://prefect-server:4200/api"
+    PREFECT_API_URL: "http://prefect-server:4200/api" # NOSONAR - internal cluster service URL
 
 # ─────────────────────────────────────────────
 # Secrets (sobrescreva no install com --set)

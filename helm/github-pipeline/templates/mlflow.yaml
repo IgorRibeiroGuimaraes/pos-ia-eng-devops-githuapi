@@ -30,6 +30,7 @@ spec:
         {{- include "github-pipeline.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: mlflow
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: mlflow
           image: "{{ .Values.mlflow.image.repository }}:{{ .Values.mlflow.image.tag }}"
@@ -49,7 +50,14 @@ spec:
             - name: mlflow-data
               mountPath: /mlflow
           resources:
-            {{- toYaml .Values.mlflow.resources | nindent 12 }}
+            requests:
+              cpu: {{ .Values.mlflow.resources.requests.cpu }}
+              memory: {{ .Values.mlflow.resources.requests.memory }}
+              ephemeral-storage: "128Mi"
+            limits:
+              cpu: {{ .Values.mlflow.resources.limits.cpu }}
+              memory: {{ .Values.mlflow.resources.limits.memory }}
+              ephemeral-storage: "512Mi"
       volumes:
         - name: mlflow-data
           persistentVolumeClaim:

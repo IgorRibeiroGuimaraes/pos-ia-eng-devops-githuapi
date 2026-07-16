@@ -9,6 +9,6 @@ data:
   API_HOST: {{ .Values.api.env.API_HOST | quote }}
   API_PORT: {{ .Values.api.env.API_PORT | quote }}
   GITHUB_API_BASE_URL: {{ .Values.api.env.GITHUB_API_BASE_URL | quote }}
-  MLFLOW_TRACKING_URI: {{ .Values.api.env.MLFLOW_TRACKING_URI | quote }}
+  MLFLOW_TRACKING_URI: {{ .Values.api.env.MLFLOW_TRACKING_URI | quote }} # NOSONAR - internal cluster service URL
   MLFLOW_EXPERIMENT_NAME: {{ .Values.api.env.MLFLOW_EXPERIMENT_NAME | quote }}
-  PREFECT_API_URL: {{ .Values.api.env.PREFECT_API_URL | quote }}
+  PREFECT_API_URL: {{ .Values.api.env.PREFECT_API_URL | quote }} # NOSONAR - internal cluster service URL
