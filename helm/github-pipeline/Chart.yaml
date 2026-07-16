@@ -16,6 +16,8 @@ keywords:
   - mlflow
   - etl
 
+icon: https://raw.githubusercontent.com/IgorRibeiroGuimaraes/-pos-ia-eng-devops-githuapi/main/docs/assets/icon.png
+
 maintainers:
   - name: IgorRibeiroGuimaraes
     url: https://github.com/IgorRibeiroGuimaraes
